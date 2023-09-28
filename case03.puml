@@ -1,0 +1,23 @@
+@startuml caso de uso
+
+:Cliente: --> (Realizar Pedido)
+:Cliente: --> (Rastrear Pedido)
+:Cliente: --> (Política de Devolução)
+:Cliente: --> (UC1: Realizar Cadastro/Login)
+:Funcionario: --> (Gerenciar Estoque)
+:Funcionario: --> (Confirmar Pedido)
+:Funcionario: --> (Gerar Relatório de Vendas)
+:Sistema: --> (Verificar Estoque)
+:SistemaDePagamento: --> (Confirmar Pagamento)
+
+(Realizar Pedido) <-- Sistema : <<include>>
+(Rastrear Pedido) <-- Sistema : <<include>>
+(Política de Devolução) <-- Sistema : <<include>>
+(UC1: Realizar Cadastro/Login) <-- Sistema : <<include>>
+(Gerenciar Estoque) <-- Sistema : <<include>>
+(Confirmar Pedido) <-- Sistema : <<include>>
+(Gerar Relatório de Vendas) <-- Sistema : <<include>>
+(Verificar Estoque) <-- Sistema : <<include>>
+(Confirmar Pagamento) <-- SistemaDePagamento : <<include>>
+
+@enduml

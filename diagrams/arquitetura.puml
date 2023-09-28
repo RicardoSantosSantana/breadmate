@@ -1,0 +1,55 @@
+@startuml BreadMate - Arquitetura
+
+title Diagrama da Arquitetura da Padaria com Observabilidade
+
+!include <C4/C4_Container>
+
+Person(cliente, "Cliente", "Realiza pedidos usando o aplicativo móvel")
+Person(funcionario, "Funcionário", "Gerencia pedidos e estoque usando o aplicativo web")
+
+System_Boundary(cxt_padaria, "Sistema da Padaria") {
+  Container(app_movel, "App Móvel", "Flutter", "Permite que clientes façam pedidos")
+  Container(app_web, "App Web Administrativo", "React", "Permite que funcionários gerenciem pedidos e estoque")
+  Container(gateway_api, "Gateway de API", "Nginx", "Direciona requisições recebidas para microserviços apropriados")
+  Container(servico_auth, "Serviço de Autenticação", "Golang", "Gerencia autenticação e autorização de usuários")
+  Container(servico_pedido, "Serviço de Pedido", "Golang", "Gerencia o processamento de pedidos")
+  Container(servico_estoque, "Serviço de Estoque", "Golang", "Gerencia o estoque")
+  Container(servico_cache, "Serviço de Cache", "Redis", "Armazena dados frequentemente acessados em cache")
+  Container(fila_mensagem, "Fila de Mensagens", "Kafka", "Gerencia operações assíncronas")
+  Container(servico_monitoramento, "Serviço de Monitoramento", "Prometheus", "Monitora a saúde do sistema")
+  Container(servico_log, "Serviço de Log", "Elasticsearch", "Armazena e indexa logs")
+  Container(servico_alertas, "Serviço de Alertas", "Grafana", "Gera alertas com base em métricas e logs")
+  Container(servico_erro, "Log de Erros", "Sentry", "Monitora e registra erros")
+  Container(balanceador_carga, "Balanceador de Carga", "HAProxy", "Distribui requisições recebidas")
+  Container(gerenciamento_config, "Gerenciamento de Configuração", "Consul", "Gerencia descoberta de serviço e configuração")
+  Container(servico_backup, "Serviço de Backup", "", "Realiza backups regulares dos dados")
+  Container(waf, "Firewall de Aplicação Web", "", "Protege a aplicação")
+}
+
+System_Ext(gateway_pagamento, "Gateway de Pagamento", "Processa pagamentos")
+System_Ext(servico_sms, "Serviço de SMS", "Gerencia notificações via SMS")
+System_Ext(cdn, "Rede de Entrega de Conteúdo", "Entrega conteúdo estático")
+
+Rel(cliente, app_movel, "Utiliza", "HTTPS")
+Rel(funcionario, app_web, "Utiliza", "HTTPS")
+Rel(app_movel, gateway_api, "Requisita", "HTTPS")
+Rel(app_web, gateway_api, "Requisita", "HTTPS")
+Rel(gateway_api, servico_auth, "Direciona para", "HTTPS")
+Rel(gateway_api, servico_pedido, "Direciona para", "HTTPS")
+Rel(gateway_api, servico_estoque, "Direciona para", "HTTPS")
+Rel(gateway_api, servico_cache, "Consulta", "HTTPS")
+Rel(gateway_api, balanceador_carga, "Está atrás de", "HTTPS")
+Rel(gateway_api, waf, "É protegido por", "HTTPS")
+Rel(servico_auth, gerenciamento_config, "Busca configurações de", "HTTPS")
+Rel(servico_pedido, gateway_pagamento, "Envia tarefas de pagamento para (Assíncrono)", "Kafka")
+Rel(servico_pedido, fila_mensagem, "Adiciona tarefas à", "Kafka")
+Rel(servico_pedido, servico_sms, "Envia notificações através de (Assíncrono)", "Kafka")
+Rel(servico_pedido, servico_backup, "Realiza backup de dados com", "HTTPS")
+Rel(servico_pedido, servico_erro, "Envia erros para", "HTTPS")
+Rel(servico_monitoramento, gateway_api, "Monitora", "HTTPS")
+Rel(servico_log, gateway_api, "Recebe logs de", "HTTPS")
+Rel(servico_erro, gateway_api, "Recebe erros de", "HTTPS")
+Rel(servico_alertas, servico_monitoramento, "Monitora métricas e gera alertas", "HTTPS")
+Rel(gateway_api, cdn, "Serve conteúdo estático através de", "HTTPS")
+
+@enduml

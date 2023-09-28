@@ -1,0 +1,50 @@
+@startuml BreadMate
+
+title BreadMate - Diagrama de Arquitetura
+
+!include <C4/C4_Container>
+
+Person(customer, "Customer", "Orders products using mobile app")
+Person(employee, "Employee", "Manages orders and inventory using web app")
+
+System_Boundary(cxt_padaria, "Padaria System") {
+  Container(mobile_app, "Mobile App", "Flutter", "Allows customers to place orders")
+  Container(web_app, "Admin Web App", "React", "Allows employees to manage orders and inventory")
+  Container(api_gateway, "API Gateway", "Nginx", "Routes incoming requests to appropriate microservices")
+  Container(auth_service, "Authentication Service", "Golang", "Handles user authentication and authorization")
+  Container(order_service, "Order Service", "Golang", "Manages order processing")
+  Container(inventory_service, "Inventory Service", "Golang", "Handles inventory management")
+  Container(cache_service, "Cache Service", "Redis", "Caches frequently accessed data")
+  Container(message_queue, "Message Queue", "Kafka", "Handles asynchronous operations")
+  Container(monitoring_service, "Monitoring Service", "Prometheus", "Monitors system health")
+  Container(logging_service, "Logging Service", "Elasticsearch", "Stores and indexes logs")
+  Container(load_balancer, "Load Balancer", "HAProxy", "Distributes incoming requests")
+  Container(config_management, "Configuration Management", "Consul", "Handles service discovery and configuration")
+  Container(backup_service, "Backup Service", "", "Handles regular data backups")
+  Container(waf, "Web Application Firewall", "", "Secures the application")
+}
+
+System_Ext(payment_gateway, "Payment Gateway", "Processes payments")
+System_Ext(sms_service, "SMS Notification", "Handles text notifications")
+System_Ext(cdn, "Content Delivery Network", "Delivers static content")
+
+Rel(customer, mobile_app, "Uses", "HTTPS")
+Rel(employee, web_app, "Uses", "HTTPS")
+Rel(mobile_app, api_gateway, "Requests", "HTTPS")
+Rel(web_app, api_gateway, "Requests", "HTTPS")
+Rel(api_gateway, auth_service, "Routes to", "HTTPS")
+Rel(api_gateway, order_service, "Routes to", "HTTPS")
+Rel(api_gateway, inventory_service, "Routes to", "HTTPS")
+Rel(api_gateway, cache_service, "Queries", "HTTPS")
+Rel(api_gateway, load_balancer, "Is behind", "HTTPS")
+Rel(api_gateway, waf, "Is protected by", "HTTPS")
+Rel(auth_service, config_management, "Fetches config from", "HTTPS")
+Rel(order_service, payment_gateway, "Sends payment tasks to (Async)", "Kafka")
+Rel(order_service, message_queue, "Adds tasks to", "Kafka")
+Rel(order_service, sms_service, "Sends notifications through (Async)", "Kafka")
+Rel(order_service, backup_service, "Backs up data with", "HTTPS")
+Rel(monitoring_service, api_gateway, "Monitors", "HTTPS")
+Rel(logging_service, api_gateway, "Receives logs from", "HTTPS")
+Rel(api_gateway, cdn, "Serves static content through", "HTTPS")
+
+@enduml

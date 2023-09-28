@@ -1,0 +1,27 @@
+@startuml fluxo
+!include <C4/C4_Context>
+
+actor Cliente
+actor Funcionario
+actor Gerente
+actor Sistema
+
+usecase FazerPedido
+usecase GerenciarEstoque
+usecase ConfirmarPagamento
+usecase EnviarNotificacoes
+usecase FazerEncomendas
+usecase GerarRelatorios
+usecase VerificarEstoque
+usecase PoliticaDeDevolucao
+
+Cliente --> FazerPedido
+Funcionario --> GerenciarEstoque
+Funcionario --> GerarRelatorios
+Cliente --> FazerEncomendas
+Cliente --> ConfirmarPagamento
+Sistema --> EnviarNotificacoes
+Gerente --> VerificarEstoque
+Cliente --> PoliticaDeDevolucao
+
+@enduml

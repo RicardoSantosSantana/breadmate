@@ -1,0 +1,21 @@
+ 
+@startuml Basic use case
+actor Cliente
+actor Funcionario
+
+usecase Realizar_Cadastro_Login as "Realizar Cadastro/Login"
+usecase Fazer_Pedido as "Fazer Pedido"
+usecase Acompanhar_Pedido as "Acompanhar Pedido"
+usecase Gerenciar_Estoque as "Gerenciar Estoque"
+usecase Processar_Pedido as "Processar Pedido"
+usecase Gerar_Relatorios as "Gerar Relatórios"
+
+Cliente --> Realizar_Cadastro_Login
+Cliente --> Fazer_Pedido
+Cliente --> Acompanhar_Pedido
+
+Funcionario --> Gerenciar_Estoque
+Funcionario --> Processar_Pedido
+Funcionario --> Gerar_Relatorios
+@enduml
+ 
